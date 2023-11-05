@@ -108,7 +108,6 @@ nmcli con modify wireguard-swiss  ipv4.dns-priority 9999
 nmcli con modify wireguard-swiss ipv4.route-metric 9999
 nmcli con modify wireguard-swiss  ipv6.dns-priority 9999
 nmcli con modify wireguard-swiss ipv6.route-metric 9999
-nmcli con modify wireguard-swiss connection.autoconnect-priority -2 # not sure if this is needed?
 nmcli con modify wireguard-swiss connection.autoconnect yes
 </code></pre>
 <p>We run these commands since we want only connections that explicitly want to use the vpn to use it. After running these commands the new interface should come up every time you log in, and the priority should be the lowest possible each time.</p>
