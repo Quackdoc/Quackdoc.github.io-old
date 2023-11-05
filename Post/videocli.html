@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <script src="https://www.w3schools.com/lib/w3data.js"></script>
+  <script src="/JS/microlight.js"></script>
+<head>
+  <link rel="stylesheet" href="/CSS/simple.css">
+  <link rel="stylesheet" href="/CSS/custom.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quackdocs Blog</title>
+</head>
+
+<body>
+  <div>
+    <header>
+      <nav>
+        <h1 align="center">
+          Quack's Blog
+        </h1>
+        <br/>
+        <ul>
+          <li><a href="/">HomePage</a></li>
+          <li><a href="/about.html">About</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div>
+      
+<header>
+  <p align="center"><small><span>2023-11-02T01:03:37Z | <a>Tidbits</a> | <a>Linux</a> <a>Video</a> <a>CLI</a> </span></small></p>
+</header>
+<section>
+  <h1>Easy video tips for CLI chads</h1>
+<p>When it comes to encoding videos, FFmpeg is a ubiquitous tool, it's supported on nearly every modern platform, and many retro platforms, includes a plethora of encoders and decoders, and targets most currently used architectures.</p>
+<p>for decoding videos and watching them MPV is easily king here, with a great deal of flexibility and customization, you can do a LOT to tune your viewing experience perfectly.</p>
+<p>One of the downsides to using FFmpeg and other CLI tools is how many options they can sometimes have and scripting these options can sometimes be a complicated mess. This post will cover a few tips and tricks to make it just a little bit easier.</p>
+<h2>Flexible scripting.</h2>
+<p>This will focus on bash scripts however these can easily be implemented on windows via python or powershell scripting too.</p>
+<p>Taking a look at the given example it is small and concise, however it is hard to read and is prone to spelling mistakes that can be hard to point out.</p>
+<pre><code class="language-sh">ffmpeg -init_hw_device vulkan -i Pacific-rim.webm \
+-vf hwupload,libplacebo=tonemapping=st2094-40:peak_detect=false:contrast_recovery=0.5:colorspace=bt2020nc:color_primaries=bt2020:color_trc=arib-std-b67:range=tv:format=yuv420p10le,hwdownload,format=yuv420p10le \
+ -c:v rawvideo -f nut - | mpv --cache=no -
+</code></pre>
+<p>instead of dealing with this mess, we can actually instead use an array instead, this lets us easily format the arguments, add comments, and as implied by the previous point, comment out arguments. and example of the exact same script is given below, going by character count alone the script is longer, however it is much easier to read and work with.</p>
+<pre><code class="language-sh">#!/bin/bash
+
+args=(
+###set this block as needed
+tonemapping=st2094-40
+:peak_detect=false
+:gamut_mode=perceptual
+:contrast_recovery=0.5
+###
+#:deband=true
+#:deband_iterations=4
+#:deband_threshold=8
+###set HLG
+:colorspace=bt2020nc
+:color_primaries=bt2020
+:color_trc=arib-std-b67
+###
+:range=tv
+:format=yuv420p10le,hwdownload,format=yuv420p10le
+)
+
+formated=$(echo ${args[@]} | tr -d &quot; &quot;)
+
+ffmpeg -init_hw_device vulkan -i Pacific-rim.webm -vf hwupload,libplacebo=$formated -c:v rawvideo -f nut - | mpv --cache=no -
+</code></pre>
+<h2>Comparing videos with MPV</h2>
+<p>Comparing videos can be one of the worst experiences from proprietary tools that are lacking in features, to open source tools that are really janky, My prefered way of comparing videos is actually using MPV.</p>
+<p><a href="https://gist.github.com/Quackdoc/bacd7f5eb78df5fffdca08c0e9720563">this is a link to my mpv config</a> if you scroll to the bottom I have a couple profiles created to help in comparing videos <code>2sidesplit</code> and the various <code>diff</code> profiles will most likely be the most useful for visualizing changes. while dedicated tools can be more helpful, MPV is more then enough for simple comparisons.</p>
+<p>to use MPV in this manor, simply launch <code>mpv file1.mkv --external-file=file2.mkv</code> then you can use <code>--profile=diff</code> to use one of the diff profiles. if you instead want to be able to switch between videos do not specify a profile and instead use <code>set vid 1</code> <code>set vid 2</code> to swap between videos, this can scale to as many videos as you have. you can set keybinds by adding the below to your input.conf. the key buttons will then be <code>ctrl + shift + 1</code> etc.</p>
+<pre><code>Ctrl+! set vid 1
+Ctrl+@ set vid 2
+Ctrl+# set vid 3
+Ctrl+$ set vid 4
+</code></pre>
+<h2>Comparing MPV settings</h2>
+<p><a href="https://gist.github.com/Quackdoc/efd1b93e12cf915a4d2deeb9b4107cf6">This is a link to a script</a> I modify and use to collect screenshots to use this script, I highly recommend setting a profile like so in your mpv.conf and launching with it. it's important to set <code>input-ipc-server</code> as this is what the script I made uses to interact with mpv.</p>
+<pre><code class="language-sh">[comp]
+#input-ipc-server=\\.\pipe\mpvsocket  ### for windows
+input-ipc-server=/tmp/mpvsocket           ### for linux
+
+##set these as you please
+screenshot-format=jxl
+screenshot-directory=~/Pictures/mpv
+screenshot-jxl-distance=0.0
+screenshot-high-bit-depth=yes
+screenshot-jxl-effort=3
+
+##set this to yes if you want to retain the original colorspace
+screenshot-tag-colorspace=no
+</code></pre>
+<h2>Generating images to share</h2>
+<p>while you really <em>shouldn't</em> use keyframes to showcase your new av1 encodes, we already know you will anyways, so here is an easy way to do so.</p>
+<p>this specifically is an example to create animated AVIF images for each keyframe in your encode. this is great since you can use an entire GOP for showcasing your encodes.
+<code>ffmpeg -i .\nyan-av1.webm -c copy -f segment .\avif-keys\out-%02d.avif</code></p>
+<p>this on the otherhand will generate a png of every keyframe you have.
+<code>ffmpeg -i ..\nyan-av1.webm -c:v copy -an -bsf:v &quot;noise=drop=not(key)&quot; -f nut - | ffmpeg -vsync 0 -i - out/image-%03d.png</code></p>
+<h3>This is incomplete, and will be added to in the future</h3>
+</section>
+
+    </div>
+    <hr>
+    <div>
+      <div w3-include-html="/signature.html"></div>
+    </div>
+    <hr>
+    <footer>
+      <p align="center">
+        <i>generated by <a href="https://github.com/Candlest/rigos">rigoss</a>, Base CSS by <a href="https://simplecss.org/">simple.css</a>.</i>
+      </p>
+    </footer>
+  </div>
+  <script>
+    w3IncludeHTML();
+    </script>
+</body>
+
+</html>
