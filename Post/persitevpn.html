@@ -30,7 +30,9 @@
   <p align="center"><small><span>2023-11-04T18:24:00Z | <a>Tutorial</a> | <a>Linux</a> <a>Windows</a> <a>VPN</a> </span></small></p>
 </header>
 <section>
-  <h1>Per-site VPN using firefox and wireguard (or other VPNs)</h1>
+  <h1>NOTE: THIS IS UNSAFE</h1>
+<p>It turns out that sometimes when firefox boots the multi account containers will not load up. If this happens and you use a website you don't want to be used over your normal network <strong>THIS WILL COMPROMISE YOU</strong> The websites will load through your normal network. You have been warned.</p>
+<h1>Per-site VPN using firefox and wireguard (or other VPNs)</h1>
 <p>The basic Idea of this is pretty simple, Firefox has an offical addon called Multi-Account containers. This allows you to create and use pseudo profiles. These profiles allow you to isolate cookies, And use mozilla VPN. But &quot;wait&quot; you say, &quot;Mozilla VPN sucks!&quot; I agree! thankfully Mozilla may not allow us to use wireguard VPNs from within firefox let alone the extension, Socks5 proxies are supported.</p>
 <h3>Why do we need wireguard at all?</h3>
 <p>Aside from the obvious &quot;My VPN provider doesn't support socks5.&quot; Socks5 doesn't have inherent encryption, this means a misconfigured setup has a significant chance of de-anonymization occurring. There are many obvious reasons why this is bad. Due to this, It's often better to use a more reliable and easy to use VPN solution like Wireguard or OpenVPN.</p>
