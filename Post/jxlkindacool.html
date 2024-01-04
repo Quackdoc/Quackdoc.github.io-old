@@ -44,6 +44,11 @@
 <li>OK, JXL is kinda cool. I would use it but man, C++ sucks.</li>
 <li>Notes. (Read this)</li>
 </ol>
+<h4>Edit History</h4>
+<p>Major edits and corrections are at the top of the page for transparency. They will not be made to the article itself unless it is a minor edit. Everything you see here takes presidence over both the article itself and the notes section.</p>
+<ol>
+<li>We now have a <a href="https://github.com/oupson/Jxl-Gallery/releases/latest">JXL image gallery</a> for android. This is not a simple JXL viewer like before, but a fork of fossify gallery with JXL support. A proper full blown gallery app. This is quite important since now it is viable to store all of your phone images in JXL format.</li>
+</ol>
 <h2>XYB, more then just compression. Are weird colors a problem of the past?</h2>
 <p>Colorspaces are complicated things, they are a product of trying to squeeze the absolute best they can out of the hardware they are designed for, They have historically had severe limits, but first, a quick primer as to why they are needed.</p>
 <h4>I thought we learned about color in primary school...</h4>
@@ -120,9 +125,12 @@
 </ul>
 <p>Yeah, that's pretty fast, &quot;But Quack! CineForm is much faster then that! And ProRes is even faster!!!&quot; Okay yeah that is true. I lost on this battle, but they are also about 2x the size for similar quality. If you run out of SSD space for your mezzanines, it has happened to me twice, and I swear it will not again. (I said this the first time too.) You will learn the true meaning of slow. Using JXL allows me to get double the footage and avoid potential bandwidth bottlenecks which can cause timeline performance to suffer as well.</p>
 <p>I'm not lying either, this was taken from December of year 2023 200+FPS with <code>mpv</code> under Wayland using Vulkan + mailbox using a Linux desktop with sway compositor.</p>
-<p><img src="https://media.discordapp.net/attachments/673202643916816384/1182221278430634014/image.png" alt="marine-unison" /></p>
-<p>And it scales across multiple videos pretty decently too. <img src="https://media.discordapp.net/attachments/673202643916816384/1182221277776314398/image.png" alt="many marine" /></p>
+<p><img src="https://media.discordapp.net/attachments/673202643916816384/1182221278430634014/image.png" alt="marine-unison image here" /></p>
+<p><img src="https://media.discordapp.net/attachments/673202643916816384/1182221277776314398/image.png" alt="many marine image here" /></p>
 <p>I made this video by encoding the video to png, then I used the following commandline to encode the PNG to JXL, I then muxed that JXL sequence into an mkv and played it back using <code>mpv</code> the command is as follows. <code>cjxl -e 3 -d 1 --faster_decoding=4</code></p>
+<p>When encoding without the <code>faster_decoding</code> flag we get roughly half the speed as we do with it.</p>
+<p><img src="https://cdn.discordapp.com/attachments/673202643916816384/1182221413856313384/image.png" alt="Slower marine-unison image here" /></p>
+<p><img src="https://cdn.discordapp.com/attachments/673202643916816384/1182221413357195276/image.png" alt="many marine-unison slow image here" /></p>
 <p>So how useful is this for a mezzanine? 200fps is just about scratching the surface as usable. I wouldn't use it in any complicated workflows, however if you are only working with 2 or 3 simultanious video clips at a time, Then JXL could very well be useful here. Im pretty excited to see how far JXL will go in this area. Faster CPUs will mean faster decode times, and I am sure that the <code>faster_decoding</code> flag could likely be optimized too. We may also see potential optimizations when it comes to libjxl's decoder, or potentially alternative, faster decoders.</p>
 <p>&quot;OK quack, That's cool and all, but not everyone cares about a video, I just want to make sure my old craptop will load them fast enough. What about Mr. Low end? No no, Not you old desktop low? I mean <strong>low</strong> end&quot;</p>
 <p>Sure, you want low end? do you remember those old windows netbooks? I do, in fact I have one right here!.</p>
