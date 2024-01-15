@@ -108,8 +108,10 @@ Table = off
 <pre><code>connection import type wireguard file wireguard-swiss.conf
 nmcli con modify wireguard-swiss  ipv4.dns-priority 9999
 nmcli con modify wireguard-swiss ipv4.route-metric 9999
+nmcli con modify wireguard-swiss ipv4.never-default yes
 nmcli con modify wireguard-swiss  ipv6.dns-priority 9999
 nmcli con modify wireguard-swiss ipv6.route-metric 9999
+nmcli con modify wireguard-swiss ipv6.never-default yes
 nmcli con modify wireguard-swiss connection.autoconnect yes
 </code></pre>
 <p>We run these commands since we want only connections that explicitly want to use the vpn to use it. After running these commands the new interface should come up every time you log in, and the priority should be the lowest possible each time.</p>
@@ -132,6 +134,7 @@ WantedBy=default.target
 <p>Finally for the last steps, Setup the addon Multi-account containers for firefox. Firstly Add the addon to your browser using firefox's <a href="https://addons.mozilla.org/en-CA/firefox/addon/multi-account-containers/">addon page for it.</a> Then open the addon window, Click <code>Manage containers</code>, and then <code>New container</code>. Give it a good Name, Colour, and Icon.</p>
 <p>You will then go again, click <code>Manage Containers</code>, Click the Container you just created, and then click <code>Advanced Proxy Setup</code>. Add the socks5 IP and port we chose, in my case it is <code>127.0.0.1:25344</code>. However we need to prefix it with <code>socks://</code> to tell firefox it is a socks vpn, so I would enter <code>socks://127.0.0.1:25344</code>. Finally click apply, and you are done!</p>
 <p>You can now use this profile to browse webpages with that VPN without interrupting any other traffic on your PC. Simply repeat the instructions you had to go through again, using a different port and VPN server to create new profiles that have different VPNs.</p>
+
 </section>
 
     </div>
